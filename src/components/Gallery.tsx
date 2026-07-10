@@ -1,15 +1,18 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import type { GalleryImage } from "../types";
+import Lightbox from "./Lightbox";
 
 export default function Gallery({ images }: { images: GalleryImage[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const scrollBy = (dir: 1 | -1) => {
     scrollerRef.current?.scrollBy({ left: dir * 280, behavior: "smooth" });
   };
 
-  const items = images.length > 0 ? images : Array.from({ length: 5 }, () => null);
+  const hasImages = images.length > 0;
+  const items = hasImages ? images : Array.from({ length: 5 }, () => null);
 
   return (
     <div>
@@ -21,12 +24,18 @@ export default function Gallery({ images }: { images: GalleryImage[] }) {
         >
           {items.map((img, i) =>
             img ? (
-              <div
+              <button
                 key={img.url + i}
-                className="shrink-0 h-40 w-52 rounded-xl overflow-hidden border border-black/10 dark:border-white/10"
+                onClick={() => setLightboxIndex(i)}
+                className="shrink-0 h-40 w-52 rounded-xl overflow-hidden border border-black/10 dark:border-white/10 cursor-zoom-in group relative"
+                aria-label={img.caption ? `View photo: ${img.caption}` : "View photo"}
               >
-                <img src={img.url} alt={img.caption ?? ""} className="h-full w-full object-cover" />
-              </div>
+                <img
+                  src={img.url}
+                  alt={img.caption ?? ""}
+                  className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+              </button>
             ) : (
               <div
                 key={i}
@@ -54,6 +63,15 @@ export default function Gallery({ images }: { images: GalleryImage[] }) {
           <ChevronRight size={16} />
         </button>
       </div>
+
+      {hasImages && lightboxIndex !== null && (
+        <Lightbox
+          images={images}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
     </div>
   );
 }

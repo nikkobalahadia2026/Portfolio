@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { getProfile, updateProfile, uploadMedia } from "../../lib/db";
+import { Crop } from "lucide-react";
+import { getProfile, updateProfile, uploadMediaBlob, deleteMediaByUrl } from "../../lib/db";
 import type { ProfileRow } from "../../lib/dbTypes";
 import { Button, Input, Label, SectionCard } from "../ui";
+import CropModal from "../CropModal";
+
+// Square, matching the rounded avatar tile on the live site.
+const AVATAR_ASPECT = 1;
 
 const EMPTY: Omit<ProfileRow, "id" | "updated_at"> = {
   name: "",
@@ -20,6 +25,7 @@ export default function ProfileSection() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [pendingImageSrc, setPendingImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
     getProfile().then((row) => {
@@ -44,17 +50,41 @@ export default function ProfileSection() {
     }
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const readFileAsDataUrl = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handlePickFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
+    setStatus(null);
+    setPendingImageSrc(await readFileAsDataUrl(file));
+  };
+
+  const handleAdjustExisting = () => {
+    if (!form.avatar_url) return;
+    setStatus(null);
+    setPendingImageSrc(form.avatar_url);
+  };
+
+  const handleCropConfirm = async (blob: Blob) => {
     setUploading(true);
+    setStatus(null);
     try {
-      const url = await uploadMedia(file, "avatar");
+      const previousUrl = form.avatar_url;
+      const url = await uploadMediaBlob(blob, "avatar");
       setForm((f) => ({ ...f, avatar_url: url }));
+      if (previousUrl) await deleteMediaByUrl(previousUrl);
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Upload failed.");
     } finally {
       setUploading(false);
+      setPendingImageSrc(null);
     }
   };
 
@@ -64,20 +94,26 @@ export default function ProfileSection() {
     <div className="space-y-5">
       <SectionCard title="Profile photo">
         <div className="flex items-center gap-4">
-          <div className="h-20 w-20 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-paper-dim dark:bg-white/5 flex items-center justify-center shrink-0">
+          <div className="relative h-20 w-20 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-paper-dim dark:bg-white/5 flex items-center justify-center shrink-0">
             {form.avatar_url ? (
               <img src={form.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
               <span className="text-xs text-ink-500">No photo</span>
             )}
           </div>
-          <div>
+          <div className="flex flex-wrap gap-2">
             <label className="cursor-pointer">
               <span className="inline-flex items-center rounded-lg border border-black/10 dark:border-white/10 px-3.5 py-2 text-sm font-medium hover:bg-paper-dim dark:hover:bg-white/5 transition-colors">
-                {uploading ? "Uploading…" : "Upload photo"}
+                {uploading ? "Uploading…" : form.avatar_url ? "Replace photo" : "Upload photo"}
               </span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+              <input type="file" accept="image/*" className="hidden" onChange={handlePickFile} />
             </label>
+            {form.avatar_url && (
+              <Button variant="ghost" onClick={handleAdjustExisting} disabled={uploading}>
+                <Crop size={14} />
+                Adjust crop
+              </Button>
+            )}
           </div>
         </div>
       </SectionCard>
@@ -126,6 +162,15 @@ export default function ProfileSection() {
         </Button>
         {status && <span className="text-sm text-ink-500 dark:text-neutral-400">{status}</span>}
       </div>
+
+      {pendingImageSrc && (
+        <CropModal
+          imageSrc={pendingImageSrc}
+          aspect={AVATAR_ASPECT}
+          onCancel={() => setPendingImageSrc(null)}
+          onConfirm={handleCropConfirm}
+        />
+      )}
     </div>
   );
 }

@@ -199,3 +199,35 @@ export async function uploadMedia(file: File, folder: "avatar" | "gallery") {
   const { data } = client.storage.from("portfolio-media").getPublicUrl(path);
   return data.publicUrl;
 }
+
+// Used for cropped output (a Blob, not a File with a name/extension).
+export async function uploadMediaBlob(
+  blob: Blob,
+  folder: "avatar" | "gallery",
+  extension = "jpg"
+) {
+  const client = requireClient();
+  const path = `${folder}/${crypto.randomUUID()}.${extension}`;
+  const { error } = await client.storage.from("portfolio-media").upload(path, blob, {
+    upsert: false,
+    contentType: blob.type || `image/${extension}`,
+  });
+  if (error) throw error;
+  const { data } = client.storage.from("portfolio-media").getPublicUrl(path);
+  return data.publicUrl;
+}
+
+// Best-effort cleanup when a photo is replaced or removed — ignores errors
+// (e.g. URL doesn't belong to our bucket) since this is non-critical.
+export async function deleteMediaByUrl(url: string) {
+  try {
+    const client = requireClient();
+    const marker = "/portfolio-media/";
+    const idx = url.indexOf(marker);
+    if (idx === -1) return;
+    const path = url.slice(idx + marker.length);
+    await client.storage.from("portfolio-media").remove([path]);
+  } catch {
+    // non-fatal
+  }
+}
