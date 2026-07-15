@@ -1,5 +1,9 @@
-import { ChevronRight } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { Project } from "../types";
+
+function toHref(link: string) {
+  return link.startsWith("http") ? link : `https://${link}`;
+}
 
 export default function Projects({ projects }: { projects: Project[] }) {
   return (
@@ -12,26 +16,21 @@ export default function Projects({ projects }: { projects: Project[] }) {
             key={project.title}
             className="rounded-xl border border-black/8 dark:border-white/8 p-4 hover:border-maroon-600/40 transition-colors"
           >
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="text-sm font-semibold leading-snug">{project.title}</h3>
-              <ChevronRight size={16} className="text-ink-500 dark:text-neutral-500 shrink-0 mt-0.5" />
-            </div>
+            <h3 className="text-sm font-semibold leading-snug">{project.title}</h3>
             <p className="mt-1.5 text-[13px] leading-relaxed text-ink-500 dark:text-neutral-400">
               {project.description}
             </p>
-            {(project.link || project.hasStory) && (
-              <div className="mt-3 flex items-center gap-2 flex-wrap">
-                {project.link && (
-                  <code className="text-[11px] rounded-md bg-paper-dim dark:bg-white/5 px-2 py-1 text-ink-700 dark:text-neutral-300">
-                    {project.link}
-                  </code>
-                )}
-                {project.hasStory && (
-                  <span className="text-[11px] text-ink-500 dark:text-neutral-500">
-                    Read the story
-                  </span>
-                )}
-              </div>
+
+            {project.link && (
+              <a
+                href={toHref(project.link)}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-paper-dim dark:bg-white/5 px-2 py-1 text-[11px] font-medium text-maroon-600 dark:text-maroon-500 hover:bg-maroon-800 hover:text-white dark:hover:bg-maroon-800 transition-colors"
+              >
+                {project.linkLabel ?? project.link}
+                <ExternalLink size={11} />
+              </a>
             )}
           </div>
         ))}
