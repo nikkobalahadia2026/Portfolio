@@ -46,6 +46,7 @@ async function loadFromSupabase(): Promise<ProfileData> {
     title: profileRow?.title || fallbackProfile.title,
     email: profileRow?.email || fallbackProfile.email,
     avatarUrl: profileRow?.avatar_url ?? undefined,
+    schedulingUrl: profileRow?.scheduling_url ?? undefined,
     degree: {
       program: profileRow?.degree_program || fallbackProfile.degree.program,
       classYear: profileRow?.degree_class_year || fallbackProfile.degree.classYear,

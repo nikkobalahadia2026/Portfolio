@@ -8,6 +8,7 @@ export interface ProfileRow {
   degree_program: string;
   degree_class_year: string;
   degree_full_name: string;
+  scheduling_url: string | null;
   updated_at: string;
 }
 

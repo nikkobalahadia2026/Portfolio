@@ -1,5 +1,6 @@
 import { Link2, Briefcase, Mail, Calendar, ChevronRight, ExternalLink } from "lucide-react";
 import type { ProfileData } from "../types";
+import EmailButton from "./EmailButton";
 
 const ICONS: Record<string, typeof Link2> = {
   GitHub: Link2,
@@ -54,19 +55,21 @@ export default function Footer({ profile }: { profile: ProfileData }) {
           <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-500 dark:text-neutral-400">
             Email
           </h3>
-          <a
-            href={`mailto:${profile.email}`}
+          <EmailButton
+            email={profile.email}
             className="mt-3 flex items-center gap-2 text-sm hover:text-maroon-600 transition-colors"
           >
             <Mail size={15} />
             {profile.email}
-          </a>
+          </EmailButton>
 
           <h3 className="mt-5 text-xs font-semibold uppercase tracking-wider text-ink-500 dark:text-neutral-400">
             Let's Talk
           </h3>
           <a
-            href="#contact"
+            href={profile.schedulingUrl || "#contact"}
+            target={profile.schedulingUrl ? "_blank" : undefined}
+            rel={profile.schedulingUrl ? "noreferrer" : undefined}
             className="mt-3 flex items-center justify-between gap-2 rounded-xl bg-maroon-800 hover:bg-maroon-700 text-white px-3.5 py-2.5 text-sm font-medium transition-colors"
           >
             <span className="flex items-center gap-2">

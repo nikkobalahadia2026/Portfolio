@@ -35,6 +35,7 @@ export interface ProfileData {
   title: string;
   email: string;
   avatarUrl?: string;
+  schedulingUrl?: string;
   degree: {
     program: string;
     classYear: string;

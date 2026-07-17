@@ -1,5 +1,6 @@
 import { Calendar, Mail, MapPin, Moon, Sun, BadgeCheck } from "lucide-react";
 import type { ProfileData } from "../types";
+import EmailButton from "./EmailButton";
 
 interface Props {
   profile: ProfileData;
@@ -49,19 +50,21 @@ export default function ProfileHeader({ profile, isDark, onToggleTheme }: Props)
 
         <div className="mt-5 flex flex-wrap gap-2.5">
           <a
-            href="#contact"
+            href={profile.schedulingUrl || "#contact"}
+            target={profile.schedulingUrl ? "_blank" : undefined}
+            rel={profile.schedulingUrl ? "noreferrer" : undefined}
             className="inline-flex items-center gap-2 rounded-xl bg-maroon-800 hover:bg-maroon-700 text-white text-sm font-medium px-4 py-2.5 transition-colors"
           >
             <Calendar size={15} />
             Schedule a Call
           </a>
-          <a
-            href={`mailto:${profile.email}`}
+          <EmailButton
+            email={profile.email}
             className="inline-flex items-center gap-2 rounded-xl border border-black/10 dark:border-white/10 hover:bg-paper-dim dark:hover:bg-white/5 text-sm font-medium px-4 py-2.5 transition-colors"
           >
             <Mail size={15} />
             Send Email
-          </a>
+          </EmailButton>
         </div>
       </div>
     </div>

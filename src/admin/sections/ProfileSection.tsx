@@ -17,6 +17,7 @@ const EMPTY: Omit<ProfileRow, "id" | "updated_at"> = {
   degree_program: "",
   degree_class_year: "",
   degree_full_name: "",
+  scheduling_url: null,
 };
 
 export default function ProfileSection() {
@@ -135,6 +136,18 @@ export default function ProfileSection() {
           <div>
             <Label>Email</Label>
             <Input type="email" value={form.email} onChange={set("email")} />
+          </div>
+          <div className="sm:col-span-2">
+            <Label>Scheduling link (Calendly, Cal.com, etc.)</Label>
+            <Input
+              value={form.scheduling_url ?? ""}
+              onChange={set("scheduling_url")}
+              placeholder="https://calendly.com/your-name"
+            />
+            <p className="mt-1 text-xs text-ink-500 dark:text-neutral-500">
+              "Schedule a Call" buttons open this link. Leave blank to just scroll to the contact
+              section instead.
+            </p>
           </div>
         </div>
       </SectionCard>
