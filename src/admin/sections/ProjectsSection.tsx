@@ -10,6 +10,7 @@ const BLANK: Omit<ProjectRow, "id"> = {
   link: "",
   link_label: "",
   has_story: false,
+  story: "",
   sort_order: 0,
 };
 
