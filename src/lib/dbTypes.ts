@@ -38,6 +38,16 @@ export interface ProjectRow {
   link: string | null;
   link_label: string | null;
   has_story: boolean;
+  story: string | null;
+  sort_order: number;
+}
+
+export interface ProjectBlockRow {
+  id: string;
+  project_id: string;
+  block_type: "paragraph" | "image";
+  content: string;
+  caption: string | null;
   sort_order: number;
 }
 
@@ -55,6 +65,7 @@ export interface CertificationRow {
   title: string;
   issuer: string;
   url: string | null;
+  image_url: string | null;
   sort_order: number;
 }
 

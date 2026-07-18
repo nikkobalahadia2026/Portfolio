@@ -3,12 +3,21 @@ export interface TechCategory {
   items: string[];
 }
 
+export interface ContentBlock {
+  type: "paragraph" | "image";
+  text?: string;
+  url?: string;
+  caption?: string;
+}
+
 export interface Project {
+  id: string;
   title: string;
   description: string;
   link?: string;
   linkLabel?: string;
   hasStory?: boolean;
+  story?: string;
 }
 
 export interface ExperienceItem {
@@ -22,6 +31,7 @@ export interface Certification {
   title: string;
   issuer: string;
   url?: string;
+  imageUrl?: string;
 }
 
 export interface GalleryImage {

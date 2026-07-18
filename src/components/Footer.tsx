@@ -16,15 +16,27 @@ export default function Footer({ profile }: { profile: ProfileData }) {
             A member of
           </h3>
           <div className="mt-3 space-y-2">
-            {profile.memberOf.map((m) => (
-              <div
-                key={m.label}
-                className="flex items-center justify-between gap-2 rounded-xl border border-black/8 dark:border-white/8 px-3.5 py-2.5 text-sm"
-              >
-                <span>{m.label}</span>
-                <ExternalLink size={14} className="text-ink-500 dark:text-neutral-500 shrink-0" />
-              </div>
-            ))}
+            {profile.memberOf.map((m) =>
+              m.url ? (
+                <a
+                  key={m.label}
+                  href={m.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-between gap-2 rounded-xl border border-black/8 dark:border-white/8 px-3.5 py-2.5 text-sm hover:bg-paper-dim dark:hover:bg-white/5 transition-colors"
+                >
+                  <span>{m.label}</span>
+                  <ExternalLink size={14} className="text-ink-500 dark:text-neutral-500 shrink-0" />
+                </a>
+              ) : (
+                <div
+                  key={m.label}
+                  className="flex items-center justify-between gap-2 rounded-xl border border-black/8 dark:border-white/8 px-3.5 py-2.5 text-sm"
+                >
+                  <span>{m.label}</span>
+                </div>
+              )
+            )}
           </div>
         </div>
 

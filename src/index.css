@@ -50,6 +50,17 @@
     outline: 2px solid var(--color-maroon-600);
     outline-offset: 2px;
   }
+
+  /* Browsers don't show a pointer cursor on <button> the way they do for
+     links, so anything clickable built as a button (cards, lightbox
+     controls, admin actions, etc.) needs it set explicitly. */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
 @layer utilities {

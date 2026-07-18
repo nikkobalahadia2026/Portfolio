@@ -63,11 +63,13 @@ async function loadFromSupabase(): Promise<ProfileData> {
     projects:
       projectRows.length > 0
         ? projectRows.map((p) => ({
+            id: p.id,
             title: p.title,
             description: p.description,
             link: p.link ?? undefined,
             linkLabel: p.link_label ?? undefined,
             hasStory: p.has_story,
+            story: p.story ?? undefined,
           }))
         : fallbackProfile.projects,
     experience:
@@ -81,7 +83,12 @@ async function loadFromSupabase(): Promise<ProfileData> {
         : fallbackProfile.experience,
     certifications:
       certRows.length > 0
-        ? certRows.map((c) => ({ title: c.title, issuer: c.issuer, url: c.url ?? undefined }))
+        ? certRows.map((c) => ({
+            title: c.title,
+            issuer: c.issuer,
+            url: c.url ?? undefined,
+            imageUrl: c.image_url ?? undefined,
+          }))
         : fallbackProfile.certifications,
     gallery: galleryRows.map((g) => ({ url: g.image_url, caption: g.caption ?? undefined })),
     memberOf:
@@ -109,14 +116,7 @@ export function usePortfolioData() {
       const fresh = await loadFromSupabase();
       setData(fresh);
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "object" && err !== null && "message" in err
-            ? String((err as { message: unknown }).message)
-            : "Failed to load portfolio content.";
-      console.error("Portfolio content failed to load:", err);
-      setError(message);
+      setError(err instanceof Error ? err.message : "Failed to load portfolio content.");
       setData(fallbackProfile);
     } finally {
       setLoading(false);

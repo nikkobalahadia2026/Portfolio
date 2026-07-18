@@ -188,7 +188,9 @@ export const socialLinks = {
 
 // ---------- storage (avatar + gallery uploads) ----------
 
-export async function uploadMedia(file: File, folder: "avatar" | "gallery") {
+// ---------- storage (avatar + gallery + certification uploads) ----------
+
+export async function uploadMedia(file: File, folder: "avatar" | "gallery" | "certifications") {
   const client = requireClient();
   const ext = file.name.split(".").pop();
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
@@ -203,7 +205,7 @@ export async function uploadMedia(file: File, folder: "avatar" | "gallery") {
 // Used for cropped output (a Blob, not a File with a name/extension).
 export async function uploadMediaBlob(
   blob: Blob,
-  folder: "avatar" | "gallery",
+  folder: "avatar" | "gallery" | "certifications",
   extension = "jpg"
 ) {
   const client = requireClient();
