@@ -37,6 +37,7 @@ export const profile: ProfileData = {
   ],
   projects: [
     {
+      id: "portfolio",
       title: "Developer Portfolio & Admin CMS",
       description:
         "A self-hosted portfolio with a built-in admin panel — every section editable without redeploying, built on Next.js and Supabase.",
@@ -44,24 +45,28 @@ export const profile: ProfileData = {
       linkLabel: "Visit site",
     },
     {
+      id: "savewise",
       title: "SaveWise — Personal Finance App",
       description:
         "A Flutter finance tracker with Clean Architecture, Riverpod state management, and live charts for budgeting and spending insight.",
       hasStory: true,
     },
     {
+      id: "fittracker",
       title: "FitTracker — Mobile Fitness Scheduler",
       description:
         "A React + Supabase scheduling app for planning workouts, with real-time sync and a mobile-first interface.",
       hasStory: true,
     },
     {
+      id: "nam-builders",
       title: "NAM Builders — Company Website & CMS",
       description:
         "A custom-built company site with a dynamic content management system, establishing a digital presence for a local builder.",
       hasStory: true,
     },
     {
+      id: "study-buddy",
       title: "Study Buddy",
       description:
         "A collaborative study-planning tool for students to organize sessions, track progress, and share resources.",
